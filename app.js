@@ -14,7 +14,7 @@ const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
-
+const cors = require('cors');
 const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
@@ -25,6 +25,10 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
 // 1) GLOBAL MIDDLEWARES
+//implement cors
+app.use(cors());
+app.options('*', cors());
+// app.options('/api/v1/tours/:id', cors());
 // Serving static files
 app.use(
   express.static(path.join(__dirname, 'public'), {

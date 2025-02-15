@@ -33,16 +33,23 @@ const createSendToken = (user, statusCode, req, res) => {
     }
   });
 };
-
 exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm
-  });
+  try {
+    const newUser = await User.create({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      passwordConfirm: req.body.passwordConfirm
+    });
 
-  createSendToken(newUser, 201, req, res);
+    createSendToken(newUser, 201, req, res);
+  } catch (err) {
+    // Якщо email не унікальний
+    if (err.code === 11000) {
+      return next(new AppError('This email is already in use!', 400));
+    }
+    next(err);
+  }
 });
 
 exports.login = catchAsync(async (req, res, next) => {
